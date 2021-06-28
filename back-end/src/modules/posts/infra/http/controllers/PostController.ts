@@ -62,7 +62,7 @@ export default class FriendController {
     const posts = await listPostAll.execute();
 
     const postResponse = {
-      posts: classToClass(posts),
+      posts: posts,
     };
 
     return response.status(200).json(postResponse);
