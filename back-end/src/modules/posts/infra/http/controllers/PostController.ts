@@ -17,7 +17,11 @@ export default class FriendController {
 
     const inviteNewFriend = container.resolve(CreatePostService);
 
-    const post = await inviteNewFriend.execute({ user_id: id, title, post_img: filename });
+    const post = await inviteNewFriend.execute({
+      user_id: id,
+      title,
+      post_img: filename,
+    });
 
     return response.status(200).json(classToClass(post));
   }
@@ -36,7 +40,10 @@ export default class FriendController {
     return response.status(200).json(classToClass(post));
   }
 
-  public async likePostById(request: Request, response: Response): Promise<Response> {
+  public async likePostById(
+    request: Request,
+    response: Response
+  ): Promise<Response> {
     const { post_id } = request.body;
 
     const addLikeInPost = container.resolve(AddLikeInPostService);
@@ -46,11 +53,18 @@ export default class FriendController {
     return response.status(200).json(classToClass(post));
   }
 
-  public async listAllPosts(request: Request, response: Response): Promise<Response> {
+  public async listAllPosts(
+    request: Request,
+    response: Response
+  ): Promise<Response> {
     const listPostAll = container.resolve(ListPostAllService);
 
     const posts = await listPostAll.execute();
 
-    return response.status(200).json(classToClass(posts));
+    const postResponse = {
+      posts: classToClass(posts),
+    };
+
+    return response.status(200).json(postResponse);
   }
 }
