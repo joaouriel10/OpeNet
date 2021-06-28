@@ -7,7 +7,7 @@ export default interface IUsersRepository {
     save(user: User): Promise<User>;
     findUnwantedUsers(): Promise<User[]>;
     findAllUsersApproved(user: User): Promise<User[]>;
-    findAllUsersSimilar(course_id: string): Promise<User[]>;
+    findAllUsersSimilar(course_id: string, user_id: string): Promise<User[]>;
     findById(id: string): Promise<User | undefined>;
     findByEmail(email: string): Promise<User | undefined>
     findByUsername(username: string): Promise<User | undefined>

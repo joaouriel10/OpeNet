@@ -23,7 +23,7 @@ class ListApprovedUsersService {
         throw new AppError('User does not exist.');
     }
 
-    const users = await this.usersRepository.findAllUsersSimilar(user.course_id);
+    const users = await this.usersRepository.findAllUsersSimilar(user.course_id, user.id);
 
     const friends = await this.friendsRepository.findFriendsAcceptByUserId(user.id);
     

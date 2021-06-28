@@ -23,7 +23,7 @@ class UsersRepository implements IUsersRepository {
     const users = await this.ormRepository.find({ relations: ['course_id'], where: { approved: true, course_id: Not(user.course_id.id) }});
     
     await Promise.all(users.map(async (findUser) => {
-      const friend = await this.friendOrmRepository.findOne({ where: [{ friend: findUser.id }, { user: findUser.id }] });
+      const friend = await this.friendOrmRepository.findOne({ where: [[{ friend: findUser.id }, { user: user.id }], [{ friend: user.id }, { user: findUser.id }]] });
       if (friend) {
         console.log('sou seu amigo: ' + findUser.username)
         users.splice(users.indexOf(findUser), 1);
@@ -35,11 +35,11 @@ class UsersRepository implements IUsersRepository {
     return users;
   }
 
-  public async findAllUsersSimilar(course_id: string): Promise<User[]> {
+  public async findAllUsersSimilar(course_id: string, user_id: string): Promise<User[]> {
     const users = await this.ormRepository.find({ where: { approved: true, course_id: course_id }, relations: ['course_id', ] });
 
     await Promise.all(users.map(async (user) => {
-      const friend = await this.friendOrmRepository.findOne({ where: [{ friend: user.id }, { user: user.id }] });
+      const friend = await this.friendOrmRepository.findOne({ where: [[{ friend: user.id }, { user: user_id }], [{ friend: user_id }, { user: user.id }]] });
       
       if (friend) {
         console.log('sou seu amigo: ' + user.username)
