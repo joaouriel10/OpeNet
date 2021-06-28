@@ -19,7 +19,8 @@ class ListPostByIdService {
     const posts = await this.postsRepository.findAll();
 
     await Promise.all(posts.map(async (post) => {
-      post.post_img = `http://localhost:3333/files/${post.post_img}`;
+      delete post.post_img;
+      post.post_url = `http://localhost:3333/files/${post.post_img}`;
 
       const user = await this.usersRepository.findById(post.user?.id);
       if (user) {
