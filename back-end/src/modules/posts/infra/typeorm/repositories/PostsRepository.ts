@@ -39,7 +39,7 @@ class PostsRepository implements IPostsRepository {
   }
 
   public async findAll(): Promise<Posts[]> {
-    const posts = await this.ormRepository.find({ relations: ['user'] });
+    const posts = await this.ormRepository.find({ relations: ['user'], order: { created_at: 'DESC' } });
 
     return posts;
   }
