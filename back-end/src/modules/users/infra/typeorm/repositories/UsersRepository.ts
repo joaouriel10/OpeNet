@@ -23,12 +23,17 @@ class UsersRepository implements IUsersRepository {
     const users = await this.ormRepository.find({ relations: ['course_id'], where: { approved: true, course_id: Not(user.course_id.id) }});
     
     await Promise.all(users.map(async (findUser) => {
-      const friend = await this.friendOrmRepository.findOne({ where: [[{ friend: findUser.id }, { user: user.id }], [{ friend: user.id }, { user: findUser.id }]] });
+      const friend = await this.friendOrmRepository.findOne({ where: [{ friend: findUser.id }, { user: user.id }] });
       if (friend) {
         console.log('sou seu amigo: ' + findUser.username)
         users.splice(users.indexOf(findUser), 1);
       } else {
-        console.log('nao sou seu amigo: ' + findUser.username)
+        const data = await this.friendOrmRepository.findOne({ where: [{ friend: user.id }, { user: findUser.id }] });
+        if (data) {
+          users.splice(users.indexOf(user), 1);
+        } else {
+          console.log('nao sou seu amigo: ' + findUser.username)
+        }
       }
     }));
 
@@ -39,13 +44,19 @@ class UsersRepository implements IUsersRepository {
     const users = await this.ormRepository.find({ where: { approved: true, course_id: course_id }, relations: ['course_id', ] });
 
     await Promise.all(users.map(async (user) => {
-      const friend = await this.friendOrmRepository.findOne({ where: [[{ friend: user.id }, { user: user_id }], [{ friend: user_id }, { user: user.id }]] });
+      const friend = await this.friendOrmRepository.findOne({ where: [{ friend: user.id }, { user: user_id }] });
       
       if (friend) {
         console.log('sou seu amigo: ' + user.username)
         users.splice(users.indexOf(user), 1);
       } else {
-        console.log('nao sou seu amigo: ' + user.username)
+        const data = await this.friendOrmRepository.findOne({ where: [{ friend: user_id }, { user: user.id }] });
+        if (data) {
+          console.log('sou seu amigo: ' + user.username)
+          users.splice(users.indexOf(user), 1);
+        } else {
+          console.log('nao sou seu amigo: ' + user.username)
+        }
       }
     }));
 
